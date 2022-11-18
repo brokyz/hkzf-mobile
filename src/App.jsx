@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 
 import './App.less'
 
-// 路由页面
+// 路由
 import Home from './pages/Home'
 
 export default function App() {
