@@ -43,8 +43,28 @@ export default function Index() {
       </Swiper>
       <Grid columns={4} gap={3}>
         <Grid.Item>
-          <img src="nav1" />
-          <p>整租</p>
+          <div className={styles['iconBars']}>
+            <img src={nav1} />
+            <h2>整租</h2>
+          </div>
+        </Grid.Item>
+        <Grid.Item>
+          <div className={styles['iconBars']}>
+            <img src={nav2} />
+            <h2>合租</h2>
+          </div>
+        </Grid.Item>
+        <Grid.Item>
+          <div className={styles['iconBars']}>
+            <img src={nav3} />
+            <h2>地图找房</h2>
+          </div>
+        </Grid.Item>
+        <Grid.Item>
+          <div className={styles['iconBars']}>
+            <img src={nav4} />
+            <h2>出租</h2>
+          </div>
         </Grid.Item>
       </Grid>
     </div>
