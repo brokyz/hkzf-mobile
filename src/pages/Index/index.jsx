@@ -1,6 +1,11 @@
 import React from 'react'
 import axios from 'axios'
-import { Swiper, Toast } from 'antd-mobile'
+import { Swiper, Toast, Grid } from 'antd-mobile'
+
+import nav1 from '../../assets/images/nav-1.png'
+import nav2 from '../../assets/images/nav-2.png'
+import nav3 from '../../assets/images/nav-3.png'
+import nav4 from '../../assets/images/nav-4.png'
 
 import styles from './index.module.less'
 
@@ -36,6 +41,12 @@ export default function Index() {
       <Swiper autoplay loop autoplayInterval={5000}>
         {items}
       </Swiper>
+      <Grid columns={4} gap={3}>
+        <Grid.Item>
+          <img src="nav1" />
+          <p>整租</p>
+        </Grid.Item>
+      </Grid>
     </div>
   )
 }
