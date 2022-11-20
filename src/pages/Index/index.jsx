@@ -63,7 +63,7 @@ export default function Index() {
         <Grid.Item>
           <div className={styles['iconBars']}>
             <img src={nav4} />
-            <h2>出租</h2>
+            <h2>我要出租</h2>
           </div>
         </Grid.Item>
       </Grid>
