@@ -43,7 +43,7 @@ export default function Index() {
       </Swiper>
       <Grid columns={4} gap={3}>
         <Grid.Item>
-          <img src="nav1" />
+          <img src={nav1} />
           <p>整租</p>
         </Grid.Item>
       </Grid>
