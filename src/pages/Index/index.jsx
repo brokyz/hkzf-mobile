@@ -48,7 +48,7 @@ export default function Index() {
   const items = swipers.map((swiper, index) => (
     <Swiper.Item key={index}>
       <div
-        className={styles.content}
+        className={styles.swiper}
         onClick={() => {
           Toast.show(`你点击了卡片 ${index + 1}`);
         }}
