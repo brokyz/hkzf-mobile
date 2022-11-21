@@ -1,72 +1,82 @@
-import React from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import React from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
-import { TabBar } from 'antd-mobile'
+import { TabBar } from "antd-mobile";
 import {
   AppOutline,
   SearchOutline,
   TextOutline,
   UserOutline,
-} from 'antd-mobile-icons'
+} from "antd-mobile-icons";
 
-import Index from '../Index'
-import House from '../House'
-import News from '../News'
-import Mine from '../Mine'
+import Index from "../Index";
+import House from "../House";
+import News from "../News";
+import Mine from "../Mine";
 
-import styles from './index.module.less'
+import styles from "./index.module.less";
 
 export default function Home() {
   const tabs = [
     {
-      key: 'index',
-      title: '首页',
+      key: "index",
+      title: "首页",
       icon: <AppOutline />,
     },
     {
-      key: 'house',
-      title: '找房',
+      key: "house",
+      title: "找房",
       icon: <SearchOutline />,
     },
     {
-      key: 'news',
-      title: '资讯',
+      key: "news",
+      title: "资讯",
       icon: <TextOutline />,
     },
     {
-      key: 'mine',
-      title: '我的',
+      key: "mine",
+      title: "我的",
       icon: <UserOutline />,
     },
-  ]
+  ];
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const changeTabsRouter = value => {
-    if (value === 'index') {
-      navigate('/home')
-    } else {
-      navigate(value)
+  const [activeKey, setActiveKey] = React.useState("index");
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (location.pathname === "/home/house") {
+      setActiveKey("house");
     }
-  }
+  }, [location.pathname]);
+
+  const changeTabsRouter = (value) => {
+    if (value === "index") {
+      navigate("/home");
+    } else {
+      navigate(value);
+    }
+    setActiveKey(value);
+  };
 
   return (
     <div className={styles.home}>
       <div className={styles.content}>
         <Routes>
-          <Route path='/' element={<Index />} />
-          <Route path='house' element={<House />} />
-          <Route path='news' element={<News />} />
-          <Route path='mine' element={<Mine />} />
+          <Route path="/" element={<Index />} />
+          <Route path="house" element={<House />} />
+          <Route path="news" element={<News />} />
+          <Route path="mine" element={<Mine />} />
         </Routes>
       </div>
       <div className={styles.tabs}>
-        <TabBar onChange={changeTabsRouter}>
-          {tabs.map(item => (
+        <TabBar activeKey={activeKey} onChange={changeTabsRouter}>
+          {tabs.map((item) => (
             <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
           ))}
         </TabBar>
       </div>
     </div>
-  )
+  );
 }
