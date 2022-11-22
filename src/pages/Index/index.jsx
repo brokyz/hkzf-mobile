@@ -92,6 +92,13 @@ export default function Index() {
 
   return (
     <div>
+      <div className={styles["search-box"]}>
+        <div className={styles.search}>
+          <div className={styles.location}></div>
+          <div className={styles.from}></div>
+        </div>
+        <i className="iconfont icon-map"></i>
+      </div>
       {isSwipersLoaded ? (
         <Swiper autoplay loop autoplayInterval={5000}>
           {items}
