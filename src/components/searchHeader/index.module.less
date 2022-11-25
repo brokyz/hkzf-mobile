@@ -1,0 +1,48 @@
+.search-box {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  z-index: 1;
+  .search {
+    flex: 1;
+    display: flex;
+    background-color: #fff;
+    border-radius: 5px;
+
+    .location {
+      width: 55px;
+      line-height: 40px;
+      text-align: center;
+      font-size: 14px;
+      i {
+        position: relative;
+        left: 3px;
+        bottom: 1px;
+        font-size: 13px;
+      }
+    }
+
+    .form {
+      flex: 1;
+      display: flex;
+      align-items: center;
+
+      i {
+        line-height: 40px;
+        font-size: 20px;
+        margin: 0 10px;
+      }
+
+      span {
+        padding-left: 10px;
+      }
+    }
+  }
+  > i {
+    width: 40px;
+    font-size: 30px;
+    line-height: 40px;
+    margin-left: 5px;
+    text-align: center;
+  }
+}

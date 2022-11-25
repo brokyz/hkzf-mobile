@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Swiper, Toast, Grid } from "antd-mobile";
 
+import SearchHeader from "../../components/searchHeader";
+
 import nav1 from "../../assets/images/nav-1.png";
 import nav2 from "../../assets/images/nav-2.png";
 import nav3 from "../../assets/images/nav-3.png";
@@ -15,6 +17,10 @@ export default function Index() {
     getSwipers();
     getGroups();
     getNews();
+    let myCity = new BMapGL.LocalCity();
+    myCity.get((res) => {
+      console.log(res);
+    });
   }, []);
 
   const navigate = useNavigate();
@@ -45,14 +51,26 @@ export default function Index() {
     setNews(res.data.body);
   };
 
+  // 获取地理位置信息
+  // const [position, setPosition] = React.useState({ status: false });
+  // const getPosition = () => {
+  //   navigator.geolocation.getCurrentPosition((p) => {
+  //     console.log("当前位置信息：", p);
+  //     setPosition({
+  //       longitude: p.coords.longitude,
+  //       latitude: p.coords.latitude,
+  //       status: true,
+  //     });
+  //   });
+  // };
+
   const items = swipers.map((swiper, index) => (
     <Swiper.Item key={index}>
       <div
         className={styles.swiper}
         onClick={() => {
           Toast.show(`你点击了卡片 ${index + 1}`);
-        }}
-      >
+        }}>
         <img
           src={`http://localhost:8080${swiper.imgSrc}`}
           alt=""
@@ -92,12 +110,8 @@ export default function Index() {
 
   return (
     <div>
-      <div className={styles["search-box"]}>
-        <div className={styles.search}>
-          <div className={styles.location}></div>
-          <div className={styles.from}></div>
-        </div>
-        <i className="iconfont icon-map"></i>
+      <div className={styles.searchHeader}>
+        <SearchHeader />
       </div>
       {isSwipersLoaded ? (
         <Swiper autoplay loop autoplayInterval={5000}>
@@ -149,7 +163,7 @@ export default function Index() {
         </div>
         {news.map((item) => {
           return (
-            <div className={styles.newsItem}>
+            <div className={styles.newsItem} key={item.id}>
               <img src={`http://localhost:8080${item.imgSrc}`} />
               <div className={styles.contents}>
                 <h2>{item.title}</h2>
