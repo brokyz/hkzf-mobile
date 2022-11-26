@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Swiper, Toast, Grid } from "antd-mobile";
+import { getCurrentCity } from "../../utils";
 
 import SearchHeader from "../../components/searchHeader";
 
@@ -17,13 +18,11 @@ export default function Index() {
     getSwipers();
     getGroups();
     getNews();
-    let myCity = new BMapGL.LocalCity();
-    myCity.get((res) => {
-      console.log(res);
-    });
+    getCurrentCity().then((res) => setCity(res));
   }, []);
 
   const navigate = useNavigate();
+  const [city, setCity] = React.useState();
   const [swipers, setSwipers] = React.useState([]);
   const [groups, setGroups] = React.useState([]);
   const [news, setNews] = React.useState([]);
@@ -50,6 +49,15 @@ export default function Index() {
     });
     setNews(res.data.body);
   };
+  function getCity() {
+    let myCity = new BMapGL.LocalCity();
+    myCity.get(async (res) => {
+      const result = await axios.get(
+        `http://127.0.0.1:8080/area/info?name=${res.name}`
+      );
+      setCity(result.data.body);
+    });
+  }
 
   // 获取地理位置信息
   // const [position, setPosition] = React.useState({ status: false });
@@ -64,6 +72,7 @@ export default function Index() {
   //   });
   // };
 
+  // 封装 Swiper Item
   const items = swipers.map((swiper, index) => (
     <Swiper.Item key={index}>
       <div
@@ -80,6 +89,7 @@ export default function Index() {
     </Swiper.Item>
   ));
 
+  // nav 标签数据
   const navs = [
     {
       id: 1,
@@ -98,7 +108,7 @@ export default function Index() {
       id: 3,
       img: nav3,
       title: "地图找房",
-      path: "/path/list",
+      path: "/map",
     },
     {
       id: 4,
@@ -111,7 +121,7 @@ export default function Index() {
   return (
     <div>
       <div className={styles.searchHeader}>
-        <SearchHeader />
+        <SearchHeader city={city} />
       </div>
       {isSwipersLoaded ? (
         <Swiper autoplay loop autoplayInterval={5000}>
@@ -126,7 +136,7 @@ export default function Index() {
             <Fragment key={nav.id}>
               <Grid.Item onClick={() => navigate(nav.path)}>
                 <div className={styles["iconBars"]}>
-                  <img src={nav1} />
+                  <img src={nav.img} />
                   <h2>{nav.title}</h2>
                 </div>
               </Grid.Item>
