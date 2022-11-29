@@ -7,6 +7,7 @@ import "./App.less";
 import Home from "./pages/Home";
 import CityList from "./pages/CityList";
 import Map from "./pages/Map";
+import Test from "./pages/Test";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="home/*" element={<Home />} />
         <Route path="/citylist" element={<CityList />} />
         <Route path="/map" element={<Map />} />
+        <Route path="/test" element={<Test />} />
         <Route path="/" element={<Navigate to="/home" />} />
       </Routes>
     </>

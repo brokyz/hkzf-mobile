@@ -2,8 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { NavBar, IndexBar, List } from "antd-mobile";
+import { getCurrentCity } from "../../utils";
 
 export default function CityList() {
+
   React.useEffect(() => {
     getCityData();
   }, []);
@@ -14,7 +16,7 @@ export default function CityList() {
     navigate(-1);
   }
 
-  function formatCityData(cityData, hot) {
+  async function formatCityData(cityData, hot) {
     const cityList = {};
 
     // 按首字母分类城市信息
@@ -33,6 +35,12 @@ export default function CityList() {
     // 添加热门城市数据
     cityList.hot = hot;
     cityIndex.unshift("hot");
+
+    // 添加当前城市
+    const curCity = await getCurrentCity();
+    cityList["#"] = [curCity];
+    cityIndex.unshift("#");
+
     return {
       cityList,
       cityIndex,
@@ -48,7 +56,7 @@ export default function CityList() {
     const {
       data: { body: hot },
     } = await axios.get("http://127.0.0.1:8080/area/hot");
-    setCitys(formatCityData(cityData, hot));
+    setCitys(await formatCityData(cityData, hot));
   }
 
   return (

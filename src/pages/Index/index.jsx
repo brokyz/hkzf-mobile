@@ -114,7 +114,7 @@ export default function Index() {
       id: 4,
       img: nav4,
       title: "出租",
-      path: "/path/list",
+      path: "/test",
     },
   ];
 
