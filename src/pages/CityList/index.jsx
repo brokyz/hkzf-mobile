@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { NavBar, IndexBar, List } from "antd-mobile";
+import { NavBar } from "antd-mobile";
+import { AutoSizer, List } from "react-virtualized";
 import { getCurrentCity } from "../../utils";
 
 export default function CityList() {
-
   React.useEffect(() => {
     getCityData();
   }, []);
@@ -59,6 +59,33 @@ export default function CityList() {
     setCitys(await formatCityData(cityData, hot));
   }
 
+  const list = Array(100).fill("testData");
+
+  function rowRenderer({
+    key, // 唯一值
+    index, // 索引号
+    isScrolling, // 是否在滚动中
+    isVisible, // 当前行在list中是否可见
+    style, // 每行的样式对象
+  }) {
+    const cityIndex = citys.cityIndex;
+    const cityItems = citys.cityList[cityIndex[index]];
+    // console.log(cityItems);
+    return (
+      <div key={key} style={style}>
+        <h3>{cityIndex[index]}</h3>
+        {cityItems.map((item) => {
+          return <p>{item.label}</p>;
+        })}
+      </div>
+    );
+  }
+
+  function getRowHeight({ index }) {
+    const hei = 20 + citys.cityList[citys.cityIndex[index]].length * 20;
+    console.log(citys.cityIndex[index], " ", hei);
+    return hei;
+  }
   return (
     <>
       <NavBar
@@ -69,32 +96,23 @@ export default function CityList() {
         onBack={back}>
         城市列表
       </NavBar>
-      <div className="cityList" style={{ height: "calc(100vh - 36px)" }}>
+      <div style={{ height: "calc(100vh - 36px)" }}>
         {citys ? (
-          <IndexBar>
-            {citys.cityIndex.map((item) => {
-              return (
-                <IndexBar.Panel
-                  index={item}
-                  title={`${item}`}
-                  key={`标题${item}`}>
-                  <List>
-                    {citys.cityList[item].map((item, index) => (
-                      <List.Item
-                        key={index}
-                        onClick={() => console.log(item.label, index)}
-                        arrow="">
-                        {item.label}
-                      </List.Item>
-                    ))}
-                  </List>
-                </IndexBar.Panel>
-              );
-            })}
-          </IndexBar>
+          <AutoSizer>
+            {({ width, height }) => (
+              <List
+                width={width}
+                height={height}
+                rowCount={citys.cityIndex.length}
+                rowHeight={getRowHeight}
+                rowRenderer={rowRenderer}
+              />
+            )}
+          </AutoSizer>
         ) : (
           ""
         )}
+        {/* {console.log(citys)} */}
       </div>
     </>
   );
