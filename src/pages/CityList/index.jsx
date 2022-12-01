@@ -1,13 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { NavBar } from "antd-mobile";
+import { NavBar, Toast } from "antd-mobile";
 import { AutoSizer, List } from "react-virtualized";
 import { getCurrentCity } from "../../utils";
 
+import styles from "./index.module.less";
+
 export default function CityList() {
   React.useEffect(() => {
-    getCityData();
+    (async function () {
+      await getCityData();
+      // console.log(cityListRef)
+      // cityListRef.current.measureAllRows();
+    })();
   }, []);
 
   const navigate = useNavigate();
@@ -59,7 +65,29 @@ export default function CityList() {
     setCitys(await formatCityData(cityData, hot));
   }
 
-  const list = Array(100).fill("testData");
+  // 过滤器
+  function formatCityIndex(letter) {
+    switch (letter) {
+      case "#":
+        return "当前城市";
+      case "hot":
+        return "热门城市";
+      default:
+        return letter;
+    }
+  }
+
+  function clickCity({ label, value }) {
+    if (["北京", "上海", "广州", "深圳"].indexOf(label) > -1) {
+      localStorage.setItem("hkzf_city", JSON.stringify({ label, value }));
+      navigate(-1);
+    } else {
+      Toast.show({
+        content: "当前城市暂无房源信息",
+        duration: 1000,
+      });
+    }
+  }
 
   function rowRenderer({
     key, // 唯一值
@@ -70,22 +98,57 @@ export default function CityList() {
   }) {
     const cityIndex = citys.cityIndex;
     const cityItems = citys.cityList[cityIndex[index]];
-    // console.log(cityItems);
+
     return (
       <div key={key} style={style}>
-        <h3>{cityIndex[index]}</h3>
+        <h3>{formatCityIndex(cityIndex[index])}</h3>
         {cityItems.map((item) => {
-          return <p>{item.label}</p>;
+          return (
+            <p
+              key={item.value}
+              onClick={() => {
+                clickCity(item);
+              }}>
+              {item.label}
+            </p>
+          );
         })}
       </div>
     );
   }
 
+  function onRowsRendered({ startIndex }) {
+    if (startIndex !== activeIndex) {
+      setActiveIndex(startIndex);
+    }
+  }
+
   function getRowHeight({ index }) {
-    const hei = 20 + citys.cityList[citys.cityIndex[index]].length * 20;
-    console.log(citys.cityIndex[index], " ", hei);
+    const hei = 30 + citys.cityList[citys.cityIndex[index]].length * 32.5;
+    // console.log(citys.cityIndex[index], " ", hei);
     return hei;
   }
+
+  const cityListRef = React.useRef();
+  function clickIndex(index) {
+    cityListRef.current.measureAllRows();
+    cityListRef.current.scrollToRow(index);
+  }
+
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  function renderCityIndex() {
+    return citys.cityIndex.map((item, index) => (
+      <li
+        key={item}
+        className={activeIndex === index ? styles["index-active"] : ""}
+        onClick={() => {
+          clickIndex(index);
+        }}>
+        <span>{item === "hot" ? "热" : item}</span>
+      </li>
+    ));
+  }
+
   return (
     <>
       <NavBar
@@ -96,24 +159,27 @@ export default function CityList() {
         onBack={back}>
         城市列表
       </NavBar>
-      <div style={{ height: "calc(100vh - 36px)" }}>
+      <div className={styles.list}>
         {citys ? (
           <AutoSizer>
             {({ width, height }) => (
               <List
+                ref={cityListRef}
                 width={width}
                 height={height}
                 rowCount={citys.cityIndex.length}
                 rowHeight={getRowHeight}
                 rowRenderer={rowRenderer}
+                onRowsRendered={onRowsRendered}
+                scrollToAlignment="start"
               />
             )}
           </AutoSizer>
         ) : (
           ""
         )}
-        {/* {console.log(citys)} */}
       </div>
+      <ul className={styles["city-index"]}>{citys ? renderCityIndex() : ""}</ul>
     </>
   );
 }

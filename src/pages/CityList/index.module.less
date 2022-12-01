@@ -1,0 +1,42 @@
+.list {
+  height: calc(100vh - 36px);
+  h3 {
+    font-size: 15px;
+    margin-left: 5px;
+    padding-bottom: 10px;
+    font-weight: normal;
+    color: gray;
+  }
+
+  p {
+    padding-bottom: 10px;
+    margin-left: 10px;
+    font-size: 17px;
+  }
+}
+
+.city-index {
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  z-index: 2;
+  transform: translateY(-50%);
+
+  li {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    text-align: 20px;
+    margin-bottom: 10px;
+  }
+
+  .index-active {
+    background-color: skyblue;
+    color: white;
+  }
+
+  li:last-of-type {
+    margin-bottom: 0;
+  }
+}
