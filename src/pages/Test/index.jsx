@@ -1,40 +1,76 @@
-import React from "react";
-import "react-virtualized/styles.css"; //导入样式
-import { AutoSizer, List } from "react-virtualized"; //导入list组件
+import React, { Component } from "react";
+import { useUpdateEffect } from "ahooks";
 
-// List data as an array of strings
-const list = Array(100).fill("testData");
+class index0 extends Component {
+  state = {
+    test: 0,
+  };
 
-function rowRenderer({
-  key, // 唯一值
-  index, // 索引号
-  isScrolling, // 是否在滚动中
-  isVisible, // 当前行在list中是否可见
-  style, // 每行的样式对象
-}) {
+  componentDidMount() {
+    console.log("before setState:", this.state.test);
+    this.setState({ test: 1 });
+    console.log("after setState:", this.state.test);
+  }
+
+  render() {
+    console.log("render:", this.state.test);
+    return (
+      <div>
+        <h1>类式组件</h1>
+        <h2>test:{this.state.test}</h2>
+      </div>
+    );
+  }
+}
+
+class index1 extends Component {
+  state = {
+    test: 0,
+  };
+
+  componentDidMount() {
+    console.log("before setState:", this.state.test);
+    this.setState({ test: 1 });
+  }
+
+  componentDidUpdate() {
+    console.log("after didUpdate:", this.state.test);
+  }
+
+  render() {
+    // console.log(this.state.test);
+    return (
+      <div>
+        <h1>类式组件</h1>
+        <h2>{this.state.test}</h2>
+      </div>
+    );
+  }
+}
+
+function index2() {
+  const [test, setTest] = React.useState(0);
+  React.useEffect(() => {
+    console.log("before change:", test);
+    setTest(1);
+  }, []);
+
+  // React.useEffect(() => {
+  //   if (test !== 0) {
+  //     console.log("after change:", test);
+  //   }
+  // }, [test]);
+
+  useUpdateEffect(() => {
+    console.log("after change:", test);
+  });
+
   return (
-    <div key={key} style={style}>
-      {index}---{list[index]}---isScrolling:{isScrolling + ""}---isVisible:
-      {isVisible + ""}
+    <div>
+      <h1>函数式组件</h1>
+      <h2>{test}</h2>
     </div>
   );
 }
 
-export default function Test() {
-  return (
-    <div id="test" style={{ width: "100%", height: "100%" }}>
-      <h1>test</h1>
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            width={width}
-            height={height}
-            rowCount={list.length}
-            rowHeight={40}
-            rowRenderer={rowRenderer}
-          />
-        )}
-      </AutoSizer>
-    </div>
-  );
-}
+export default index2;

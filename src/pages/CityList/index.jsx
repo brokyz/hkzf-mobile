@@ -3,25 +3,30 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { NavBar, Toast } from "antd-mobile";
 import { AutoSizer, List } from "react-virtualized";
+import { useUpdateEffect } from "ahooks";
 import { getCurrentCity } from "../../utils";
 
 import styles from "./index.module.less";
 
 export default function CityList() {
+  const [citys, setCitys] = React.useState({ cityIndex: [], cityList: [] });
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const navigate = useNavigate();
   React.useEffect(() => {
-    (async function () {
-      await getCityData();
-      // console.log(cityListRef)
-      // cityListRef.current.measureAllRows();
-    })();
+    getCityData().then((res) => {
+      setCitys(res);
+    });
   }, []);
 
-  const navigate = useNavigate();
+  useUpdateEffect(() => {
+    cityListRef.current.measureAllRows();
+  }, [citys]);
 
   function back() {
     navigate(-1);
   }
 
+  // 格式化处理获取的城市数据
   async function formatCityData(cityData, hot) {
     const cityList = {};
 
@@ -53,7 +58,7 @@ export default function CityList() {
     };
   }
 
-  const [citys, setCitys] = React.useState();
+  // 获取城市数据
   async function getCityData() {
     const {
       data: { body: cityData },
@@ -62,7 +67,8 @@ export default function CityList() {
     const {
       data: { body: hot },
     } = await axios.get("http://127.0.0.1:8080/area/hot");
-    setCitys(await formatCityData(cityData, hot));
+    const formatData = await formatCityData(cityData, hot);
+    return formatData;
   }
 
   // 过滤器
@@ -125,17 +131,14 @@ export default function CityList() {
 
   function getRowHeight({ index }) {
     const hei = 30 + citys.cityList[citys.cityIndex[index]].length * 32.5;
-    // console.log(citys.cityIndex[index], " ", hei);
     return hei;
   }
 
   const cityListRef = React.useRef();
   function clickIndex(index) {
-    cityListRef.current.measureAllRows();
     cityListRef.current.scrollToRow(index);
   }
 
-  const [activeIndex, setActiveIndex] = React.useState(0);
   function renderCityIndex() {
     return citys.cityIndex.map((item, index) => (
       <li
@@ -160,24 +163,20 @@ export default function CityList() {
         城市列表
       </NavBar>
       <div className={styles.list}>
-        {citys ? (
-          <AutoSizer>
-            {({ width, height }) => (
-              <List
-                ref={cityListRef}
-                width={width}
-                height={height}
-                rowCount={citys.cityIndex.length}
-                rowHeight={getRowHeight}
-                rowRenderer={rowRenderer}
-                onRowsRendered={onRowsRendered}
-                scrollToAlignment="start"
-              />
-            )}
-          </AutoSizer>
-        ) : (
-          ""
-        )}
+        <AutoSizer>
+          {({ width, height }) => (
+            <List
+              ref={cityListRef}
+              width={width}
+              height={height}
+              rowCount={citys.cityIndex.length}
+              rowHeight={getRowHeight}
+              rowRenderer={rowRenderer}
+              onRowsRendered={onRowsRendered}
+              scrollToAlignment="start"
+            />
+          )}
+        </AutoSizer>
       </div>
       <ul className={styles["city-index"]}>{citys ? renderCityIndex() : ""}</ul>
     </>
